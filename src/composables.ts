@@ -5,9 +5,11 @@ export const useSpinner = () => {
   const isActive = ref<boolean>(false)
   const spinner = ref<ActiveLoader>()
 
-  const show = () => {
+  const show = (container?: HTMLElement) => {
     spinner.value = useLoading({
-      backgroundColor: '#888'
+      isFullPage: Boolean(container),
+      container,
+      opacity: 0
     }).show()
     isActive.value = true
   }
