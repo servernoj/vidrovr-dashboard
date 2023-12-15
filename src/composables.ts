@@ -9,7 +9,8 @@ export const useSpinner = () => {
     spinner.value = useLoading({
       isFullPage: Boolean(container),
       container,
-      opacity: 0
+      color: 'white',
+      backgroundColor: 'rgba(0,0,0,0)'
     }).show()
     isActive.value = true
   }

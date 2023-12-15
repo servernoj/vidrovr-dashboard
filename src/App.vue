@@ -8,7 +8,9 @@ import { RouterView } from 'vue-router'
       <RouterLink to="/" class="link">
         <img src="@/assets/logo-light.svg" alt="logo" class="logo">
       </RouterLink>
-      <section class="right" />
+      <section class="right">
+        <h2>Asset manager</h2>
+      </section>
     </nav>
     <main class="viewport">
       <RouterView />
@@ -38,7 +40,7 @@ import { RouterView } from 'vue-router'
     }
     .viewport {
       flex: 1 0 0;
-      padding: 1em;
+      padding: 2em;
       overflow-y: hidden
     }
   }

@@ -1,5 +1,5 @@
 export type ProcessingInfo = {
-  status: string;
+  status: 'success' | 'error';
   start: Date;
   end: Date;
 }

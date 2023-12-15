@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { ApiResponse, Asset } from '@/types'
 import { throttler } from '@/utils'
-import { ref, onMounted, type Ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useSpinner } from '@/composables'
 import api from '@/api'
+import AssetItem from '@/components/AssetItem.vue'
 const assets = ref<Asset[]>([])
 const { spinnerShow, spinnerHide, spinnerIsActive } = useSpinner()
-const container = ref<HTMLElement|null>(null) as Ref<HTMLElement>
 
 onMounted(
   async () => {
     // spinner show
-    spinnerShow(container.value)
+    spinnerShow()
     // Get all assets AS-IS by fetching first their IDs and then assets themselves in a controlled
     // manner, i.e. certain number of concurrent (in Promise.All sense) API requests at a time
     const unsortedAssets = await api.get<ApiResponse<string[]>>('/assets').then(
@@ -32,17 +32,36 @@ onMounted(
 </script>
 
 <template>
-  <div ref="container" class="content">
-    <pre v-if="!spinnerIsActive">{{ JSON.stringify(assets, null,2) }}</pre>
+  <div v-if="!spinnerIsActive" class="content">
+    <header>
+      <h1>
+        Please select an asset to work with
+      </h1>
+    </header>
+    <section class="assets-list">
+      <AssetItem
+        v-for="asset,idx in assets"
+        :id="asset.id"
+        :key="idx"
+        :title="asset.title"
+        :created="new Date(asset.creation_date)"
+        :thumbnail="asset.thumbnail"
+        :is-video="asset.fps > 0"
+      />
+    </section>
   </div>
 </template>
 
 <style scoped lang="scss">
   .content {
-    position: relative;
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow-y: hidden;
+    gap: 2em;
+    .assets-list {
+      flex: 1 0 0;
+      overflow-y: auto;
+    }
   }
 </style>
