@@ -16,6 +16,8 @@ const asset = computed<Asset|null>(
   }
 )
 const persons = ref<Person[]>([])
+const isMediaLoaded = ref(false)
+
 onMounted(
   async () => {
     spinnerShow()
@@ -32,19 +34,41 @@ onMounted(
 
 <template>
   <div v-if="!spinnerIsActive" class="content">
-    <h2>Asset</h2>
-    <pre v-if="asset">{{ assetsStore.assetsById[asset.id] }}</pre>
-    <h2>Persons</h2>
-    <pre v-if="asset">{{ persons }}</pre>
+    <template v-if="asset">
+      <h1>{{ asset.title }}</h1>
+      <section class="media">
+        <template v-if="asset.fps">
+          <video v-show="isMediaLoaded" controls preload="metadata" @loadedmetadata="isMediaLoaded = true">
+            <source :src="asset.media_url" :type="asset.mime_type">
+            <p>
+              Sorry, your browser doesn't support embedded videos. You can
+              <a :href="asset.media_url">download it</a>
+              and watch it offline
+            </p>
+          </video>
+        </template>
+        <img v-else :src="asset.media_url">
+      </section>
+    </template>
+    <h2 v-else>
+      Asset not found
+    </h2>
   </div>
 </template>
 
 <style scoped lang="scss">
 .content {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    gap: 2em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  gap: 2em;
+  .media {
+    width: 75%;
+    & > * {
+      width: 100%;
+    }
   }
+}
 </style>
