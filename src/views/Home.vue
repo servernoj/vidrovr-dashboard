@@ -18,7 +18,7 @@ onMounted(
       IDs => throttler({
         array: IDs.data ?? [],
         handler: id => api.get<ApiResponse<Asset>>(`/assets/${id}`).then(({ data }) => data),
-        bulkSize: 1
+        bulkSize: 10
       })
     ) as Asset[]
     spinnerHide()

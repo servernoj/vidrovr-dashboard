@@ -60,9 +60,8 @@ const props = defineProps<{
       justify-content: flex-end;
       flex: 1 0 0;
       color: var(--vt-c-text-dark-2);
-      & * {
-        display: flex;
-        justify-content: flex-end;
+      & > * {
+        text-align: end;
       }
       .created {
         flex-basis: 250px;

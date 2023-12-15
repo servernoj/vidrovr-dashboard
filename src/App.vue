@@ -13,7 +13,13 @@ import { RouterView } from 'vue-router'
       </section>
     </nav>
     <main class="viewport">
-      <RouterView />
+      <RouterView>
+        <template #default="{Component}">
+          <KeepAlive include="Home">
+            <component :is="Component" />
+          </KeepAlive>
+        </template>
+      </RouterView>
     </main>
   </div>
 </template>
