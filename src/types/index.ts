@@ -19,15 +19,13 @@ export type Asset = {
   processing_info: ProcessingInfo;
 }
 
-type ApiError = {
-  message: string,
-  code: number,
+export type PersonAppearance = {
+  start: number;
+  end: number;
+  thumbnail: string;
 }
-
-export type ApiResponse<T> = {
-  data: T,
-  error: null
-} | {
-  data: null,
-  error: ApiError
+export type Person = {
+  id: string;
+  name: string;
+  appearances: PersonAppearance[];
 }

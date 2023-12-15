@@ -7,9 +7,10 @@ const { spinnerShow, spinnerHide, spinnerIsActive } = useSpinner()
 const assetsStore = useAssetsStore()
 onMounted(
   async () => {
-    // spinner show
     spinnerShow()
-    await assetsStore.retrieveAssets()
+    if (!assetsStore.assets.length) {
+      await assetsStore.retrieveAssets()
+    }
     spinnerHide()
   }
 )
