@@ -1,32 +1,16 @@
 <script setup lang="ts">
-import type { ApiResponse, Asset } from '@/types'
-import { throttler } from '@/utils'
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useSpinner } from '@/composables'
-import api from '@/api'
 import AssetItem from '@/components/AssetItem.vue'
-const assets = ref<Asset[]>([])
+import { useAssetsStore } from '@/stores/assets'
 const { spinnerShow, spinnerHide, spinnerIsActive } = useSpinner()
-
+const assetsStore = useAssetsStore()
 onMounted(
   async () => {
     // spinner show
     spinnerShow()
-    // Get all assets AS-IS by fetching first their IDs and then assets themselves in a controlled
-    // manner, i.e. certain number of concurrent (in Promise.All sense) API requests at a time
-    const unsortedAssets = await api.get<ApiResponse<string[]>>('/assets').then(
-      IDs => throttler({
-        array: IDs.data ?? [],
-        handler: id => api.get<ApiResponse<Asset>>(`/assets/${id}`).then(({ data }) => data),
-        bulkSize: 10
-      })
-    ) as Asset[]
+    await assetsStore.retrieveAssets()
     spinnerHide()
-    assets.value = unsortedAssets.slice().sort(
-      (a, b) => {
-        return new Date(a.creation_date).getTime() - new Date(b.creation_date).getTime()
-      }
-    )
   }
 )
 </script>
@@ -40,7 +24,7 @@ onMounted(
     </header>
     <section class="assets-list">
       <AssetItem
-        v-for="asset,idx in assets"
+        v-for="asset,idx in assetsStore.assets"
         :id="asset.id"
         :key="idx"
         :title="asset.title"
