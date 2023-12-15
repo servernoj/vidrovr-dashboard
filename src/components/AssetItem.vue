@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue'
 const props = defineProps<{
   id: string
   created?: Date
@@ -12,7 +13,13 @@ const props = defineProps<{
 <template>
   <RouterLink class="asset-item" :to="`/${props.id}`">
     <section class="section left">
-      <img :src="props.thumbnail" alt="thumbnail image of the asset" class="thumbnail">
+      <ImageWithPlaceholder
+        :src="props.thumbnail"
+        alt="thumbnail image of the asset"
+        class="thumbnail"
+      >
+        <img src="@/assets/favicon.png" class="thumbnail">
+      </ImageWithPlaceholder>
       <h2 class="title">
         {{ props.title }}
       </h2>
@@ -52,6 +59,7 @@ const props = defineProps<{
       }
       .thumbnail {
         height: 50px;
+        min-width: 50px;
         border-radius: 10px;
       }
     }
