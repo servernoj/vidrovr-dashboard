@@ -5,6 +5,7 @@ import { ref, onMounted, computed } from 'vue'
 import type { Asset, Person } from '@/types'
 import { useSpinner } from '@/composables'
 import BarChart from '@/components/BarChart.vue'
+import PersonThumbnails from '@/components/PersonThumbnails.vue'
 
 type ListStat = {
   name: string
@@ -14,7 +15,6 @@ type ChartStat = {
     labels: string[]
     data: number[]
 }
-
 type PersonStat = {
   list: ListStat
   chartFull: ChartStat
@@ -93,6 +93,13 @@ const personsStats = computed<PersonStat | null>(
     }
   }
 )
+const personsSorted = computed<Person[]>(
+  () => {
+    return persons.value.slice().sort(
+      (a, b) => b.appearances.length - a.appearances.length
+    )
+  }
+)
 // -- lifecycle
 onMounted(
   async () => {
@@ -111,8 +118,10 @@ onMounted(
 
 <template>
   <div v-if="!spinnerIsActive" class="content">
-    <template v-if="asset">
-      <h1>{{ asset.title }}</h1>
+    <template v-if="asset && personsStats">
+      <h1 class="page-title">
+        {{ asset.title }}
+      </h1>
       <section class="media">
         <template v-if="asset.fps">
           <video v-show="isMediaLoaded" controls preload="metadata" @loadedmetadata="isMediaLoaded = true">
@@ -126,7 +135,7 @@ onMounted(
         </template>
         <img v-else :src="asset.media_url">
       </section>
-      <section v-if="personsStats" class="summary">
+      <section v-if="isMediaLoaded && personsStats.list.length" class="summary">
         <h2 class="summary-title">
           Persons appearances
         </h2>
@@ -149,6 +158,18 @@ onMounted(
           </BarChart>
         </div>
       </section>
+      <section v-if="isMediaLoaded && asset.fps && persons.length" class="thumbnails">
+        <h2 class="thumbnails-title">
+          Video thumbnails
+        </h2>
+        <PersonThumbnails
+          v-for="person,idx in personsSorted"
+          :key="idx"
+          :name="person.name"
+          :appearances="person.appearances"
+          :total-clip-time="asset.duration"
+        />
+      </section>
     </template>
     <h2 v-else>
       Asset not found
@@ -164,6 +185,9 @@ onMounted(
   align-items: center;
   overflow-y: auto;
   gap: 2em;
+  .page-title {
+    font-weight: bold;
+  }
   .media {
     width: 75%;
     & > * {
@@ -180,6 +204,7 @@ onMounted(
       width: 100%;
       text-align: center;
       margin: 1em 0;
+      font-weight: bold;
     }
     .summary-item {
       height: 50vh;
@@ -214,6 +239,16 @@ onMounted(
       max-width: 70vw;
     }
   }
-
+  .thumbnails {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    .thumbnails-title {
+      text-align: center;
+      font-weight: bold;
+    }
+  }
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
+const route = useRoute()
 </script>
 
 <template>
@@ -9,7 +10,7 @@ import { RouterView } from 'vue-router'
         <img src="@/assets/logo-light.svg" alt="logo" class="logo">
       </RouterLink>
       <section class="right">
-        <h2>Asset manager</h2>
+        <h2>{{ `Asset manager [${String(route.name)}]` }}</h2>
       </section>
     </nav>
     <main class="viewport">
