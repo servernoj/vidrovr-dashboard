@@ -58,4 +58,5 @@ The application has two pages/screens: `home` and `inspector`. It has a layout s
 - The implementation assumes happy-path of API responses and doesn't include error-handling logic.
 - The given dataset does not contain `image` assets (only `video`) so the handling of image assets is implemented without testing
 - The application is not optimized for mobile screens due to the need to display multimedia content side by side with contextual information. 
+- The production build, when served by `serve` (see above instructions) does not support browser page reload. 
 
