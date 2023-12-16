@@ -29,8 +29,9 @@ const assetsStore = useAssetsStore()
 const persons = ref<Person[]>([])
 // flag controlls rendering of the video element
 const isMediaLoaded = ref(false)
-// number that should be exceeded by person's appearances count for that person to be included in the compact chart
-const compactChartThreshold = ref(1)
+// number that should be exceeded by person's appearances count for that person to be included in the compact chart.
+// when set to 0 activates full chart mode
+const compactChartThreshold = ref(0)
 // -- computed
 const asset = computed<Asset|null>(
   () => {
@@ -152,8 +153,7 @@ onMounted(
           </ul>
         </div>
         <div class="summary-item chart">
-          <!-- chart-data could be personsStats.chartFull or personsStats.chartCompact -->
-          <BarChart :chart-data="personsStats.chartFull">
+          <BarChart :chart-data="!compactChartThreshold ? personsStats.chartFull : personsStats.chartCompact">
             Chart couldn't be loaded
           </BarChart>
         </div>
